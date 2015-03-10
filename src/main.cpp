@@ -66,29 +66,30 @@ int main()
 //	cout << "gp.x: " << gp.x << " gp.y: " << gp.y << endl;
 
 	Bact b[BACT_NUM];
+	for(i=0; i<BACT_NUM; i++) {
+		again:
+		bactpos[i] = find_random();
+		int intvalue = histvalue[bactpos[i]];
+		if (intvalue ==0 && check_presence(i)) {
+			goto again;
+		} else {
+//				cout << "Calculating for the bacteria[" << bactpos[i] << "]: " << intvalue << endl;
+		}
+	}
 	for (int k=0; k<NRE; k++) {
 		// Selection of 20 bacteria
-		for(i=0; i<BACT_NUM; i++) {
-			again:
-			bactpos[i] = find_random();
-			int intvalue = histvalue[bactpos[i]];
-			if (intvalue ==0 && check_presence(i)) {
-				goto again;
-			} else {
-//				cout << "Calculating for the bacteria[" << bactpos[i] << "]: " << intvalue << endl;
-			}
-		}
+
 		// Chemotactic Sequence
 		for(i=0; i<BACT_NUM; i++) {
 			for(j = 0; j < NC; j++) {
-	//			cout << "Bact " << (i+1) << "." << (j+1) << endl;
+			cout << "\nBact " << (i+1) << "." << (j+1) << endl;
 				b[i].counter = i;
 				b[i].start_process();
 				// Reproduction phase
 				if (b[i].jsw > b[i].jhealth) {
 					b[i].jhealth = b[i].jsw;
 				}
-	//			cout << "JHEALTH: " << b[i].jhealth << endl << endl;
+//			cout << "JHEALTH: " << b[i].jhealth << endl << endl;
 			}
 		}
 		// sorting stage in reproduction 6.2
@@ -108,6 +109,7 @@ int main()
 			bactpos[i] = bactpos[(BACT_NUM/2) + i];
 		}
 	}
+	cout << endl;
 	for(i=0; i<BACT_NUM; i++) {
 		cout << "BACT " << (i+1) << ": " << bactpos[i] << "=>" << histvalue[bactpos[i]] <<endl;
 	}

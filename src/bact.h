@@ -37,8 +37,8 @@ public:
 			}
 			m++;
 		}
-//		cout << "JLASTA: " << jlast << endl;
-//		cout << "JSWA: " << jsw << endl;
+		cout << "JLAST: " << jlast << endl;
+		cout << "JSW: " << jsw << endl;
 	}
 
 	double find_random(int min, int max) {
