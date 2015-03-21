@@ -25,9 +25,53 @@ typedef struct {
 #define STEP_SIZE 1
 //TODO: Define the value for DELL_T
 #define DELL_T 1
-float GLOBAL_MAX = -1;
+int GLOBAL_MAX = -1;
+// A point of GLOBAL_MAX intensity
 point gp = {0};
+// Array of current positions of the bacts
+point current_pos[BACT_NUM] = {0};
+// Array of next positions of the bacts
 point next_pos[BACT_NUM] = {0};
 int bactpos[BACT_NUM] = {0};
+// This variable acts as a key
 int histkey[256];
+// This variable acts a value in a pair
 int histvalue[256] = {0};
+// Global img variable
+cv::Mat img;
+
+#include <random>
+// This function will return a random number between 0 and 255.
+int find_random() {
+	return rand() % 255;
+}
+
+// This function gets the intensity value present at point p.
+int get_intensity(point p) {
+	return (int)img.at<uchar>(p.y, p.x);
+}
+
+// This function will return range number between the min and max.
+double find_random_range(int min, int max) {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(min, max);
+	float uniformOn01 = dis(gen);
+	return uniformOn01;
+}
+
+// This function finds the point that has a global_max
+void find_global_point() {
+	int i, j, temp;
+	// Fixing a point that has a same value as the global max.
+	for(i=gp.x; i< img.rows; i++) {
+		for (j=gp.y; j<img.cols; j++) {
+			int temp = img.at<uchar>(i,j);
+			if (temp == GLOBAL_MAX) {
+				gp.x = i;
+				gp.y = j;
+				return;
+			}
+		}
+	}
+}
