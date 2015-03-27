@@ -12,22 +12,6 @@
 #include "preprocessing.h"
 #include "bact.h"
 #include <ctime>
-/**
- * This function will return true if the random key is already present
- * in the array.
- *
- * @return true if present else false.
- */
-//bool check_presence(int index) {
-//	int i = 0;
-//	while(i < index) {
-//		if (bactpos[index] == bactpos[i]) {
-//			return true;
-//		}
-//		i++;
-//	}
-//	return false;
-//}
 
 bool check_predicates(point temp) {
 	uint t = img.at<uchar>(temp.y, temp.x);
@@ -119,14 +103,9 @@ int main()
 				}
 			}
 		}
-
-//		for(i=0; i<BACT_NUM; i++) {
-//			cout << b[i].jhealth << "\t";
-//		}
 		// splitting stage in reproduction 6.3
 		for(i=0; i<BACT_NUM/2; i++) {
 			b[i] = b[(BACT_NUM/2) + i];
-//			bactpos[i] = bactpos[(BACT_NUM/2) + i];
 			bs[i] = bs[(BACT_NUM/2) + i];
 		}
 	}
@@ -145,9 +124,9 @@ int main()
 //	for (int i=0; i<256; i++) {
 //		cout << i << ": " << histvalue[i] << endl;
 //	}
-	namedWindow("Test", WINDOW_NORMAL);
-	setMouseCallback("Test", call_back_func, NULL);
-	imshow("Test", img);
-	waitKey(0);
+//	namedWindow("Test", WINDOW_NORMAL);
+////	setMouseCallback("Test", call_back_func, NULL);
+//	imshow("Test", img);
+//	waitKey(0);
 	return 0;
 }
