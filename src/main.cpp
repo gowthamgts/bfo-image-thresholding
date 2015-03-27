@@ -4,16 +4,14 @@
 // Copyright   : There is none. You're free to use.
 // Description : Hello World in C++, Ansi-style
 //============================================================================
-#include <iostream>
-#include <string>
 
 //contains all the predefined consts and opencv headers.
 #include "predefines.h"
+#include <string>
 //preprocessing stuff contains remove_upper and a GLOBAL_MAX
 #include "preprocessing.h"
 #include "bact.h"
-using namespace std;
-
+#include <ctime>
 /**
  * This function will return true if the random key is already present
  * in the array.
@@ -33,7 +31,8 @@ using namespace std;
 
 bool check_predicates(point temp) {
 	uint t = img.at<uchar>(temp.y, temp.x);
-	return (t < 30) ? false : true;
+//	cout << "Checking for temp.x: " << temp.x << " temp.y:" << temp.y << endl;
+	return (t < THRESHOLD_LIMIT) ? false : true;
 }
 
 /**
@@ -51,7 +50,7 @@ point calc_random_bacts() {
 int main()
 {
 	int i, j;
-	cv::Mat imgrgb = imread("/home/electron/Pictures/ImageOutput/crop-1.jpg");
+	Mat imgrgb = imread("/home/electron/Pictures/ImageOutput/crop-1.jpg");
 	// Check that the image read is a 3 channels image and not empty
     CV_Assert(imgrgb.channels() == 3);
 	if (imgrgb.empty()) {
@@ -59,15 +58,17 @@ int main()
 		return -1;
 	}
 	cv::cvtColor(imgrgb, img, CV_BGR2GRAY);
-
+	std::srand(std::time(0));
 	Bact b[BACT_NUM];
-	point r[20];
 	for (i=0; i<20; i++) {
-		b[i].set_current_pos(calc_random_bacts());
-		cout << "Point selected at [" << r[i].x << "][" << r[i].y << "] => " << (int)img.at<uchar>(r[i].y, r[i].x) << endl;
+		b[i].counter = i;
+		r[i] = calc_random_bacts();
+		b[i].set_current_pos(r[i]);
+		cout << "Point selected at [" << r[i].x << "][" << r[i].y << "] => "
+				<< (int)img.at<uchar>(r[i].y, r[i].x) << endl;
 	}
 
-	// Calculation for histograms start here.
+// Calculation for histograms start here.
 	for(i=0; i< 240; i++) {
 		for (j=0; j<640; j++) {
 			int temp = img.at<uchar>(i,j);
@@ -84,32 +85,29 @@ int main()
 	}
 	cout << "GLOBAL_MAX: " << GLOBAL_MAX << endl;
 	find_global_point();
-	cout << "GP.x: " << gp.y << "\tGP.y: " << gp.x << " => " << (int) img.at<uchar>(gp.x, gp.y) << endl;
-
-
-//	for(i=0; i< BACT_NUM; i++) {
-//		b[i].set_current_pos(r[i]);
-//	}
+//	cout << "GP.x: " << gp.y << "\tGP.y: " << gp.x << " => "
+//			<< (int) img.at<uchar>(gp.x, gp.y) << endl;
 
 	for (int k=0; k<NRE; k++) {
 		// Selection of 20 bacteria
 		// Chemotactic Sequence
 		for(i=0; i<BACT_NUM; i++) {
+			b[i].counter = i;
 			for(j = 0; j < NC; j++) {
 				cout << "\nBact " << (i+1) << "." << (j+1) << endl;
-				b[i].counter = i;
+				b[i].iteration = j;
 				b[i].start_process();
 				// Reproduction phase
 				if (b[i].jsw > b[i].jhealth) {
 					b[i].jhealth = b[i].jsw;
 				}
-//				cout << "JHEALTH: " << b[i].jhealth << endl << endl;
-				break;
+				cout << "JHEALTH: " << b[i].jhealth << endl << endl;
+//				break;
 			}
-			break;
+//			break;
 		}
-		break;
-		/*
+//		break;
+//		/*
 		// sorting stage in reproduction 6.2
 		for(i=0; i<BACT_NUM; i++) {
 			for (j=i+1; j<BACT_NUM; j++) {
@@ -121,17 +119,25 @@ int main()
 				}
 			}
 		}
+
+//		for(i=0; i<BACT_NUM; i++) {
+//			cout << b[i].jhealth << "\t";
+//		}
 		// splitting stage in reproduction 6.3
 		for(i=0; i<BACT_NUM/2; i++) {
 			b[i] = b[(BACT_NUM/2) + i];
-			bactpos[i] = bactpos[(BACT_NUM/2) + i];
+//			bactpos[i] = bactpos[(BACT_NUM/2) + i];
+			bs[i] = bs[(BACT_NUM/2) + i];
 		}
-		*/
 	}
-//	cout << endl;
-//	for(i=0; i<BACT_NUM; i++) {
-//		cout << "BACT " << (i+1) << ": " << bactpos[i] << "=>" << histvalue[bactpos[i]] <<endl;
-//	}
+
+
+	cout << endl;
+	for(i=0; i<BACT_NUM; i++) {
+		cout << "BACT " << (i+1) << ": [" << bs[i].cpos.x << "]["
+				<< bs[i].cpos.y << "] "<< "=>" << get_intensity(bs[i].cpos)
+				<< endl;
+	}
 //	cout << "HISTOGRAM: " << endl;
 //	for(int i=0; i<20; i++) {
 //		cout << bactpos[i] << "=> " << histvalue[bactpos[i]] << endl;
@@ -139,8 +145,9 @@ int main()
 //	for (int i=0; i<256; i++) {
 //		cout << i << ": " << histvalue[i] << endl;
 //	}
-//	namedWindow("Test", WINDOW_NORMAL);
-//	imshow("Test", img);
-//	waitKey(0);
+	namedWindow("Test", WINDOW_NORMAL);
+	setMouseCallback("Test", call_back_func, NULL);
+	imshow("Test", img);
+	waitKey(0);
 	return 0;
 }

@@ -3,7 +3,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 using namespace cv;
-
+using namespace std;
 typedef unsigned int uint;
 typedef unsigned short int usint;
 typedef short int sint;
@@ -29,17 +29,27 @@ int GLOBAL_MAX = -1;
 // A point of GLOBAL_MAX intensity
 point gp = {0};
 // Array of current positions of the bacts
-point current_pos[BACT_NUM] = {0};
+//point current_pos[BACT_NUM] = {0};
 // Array of next positions of the bacts
-point next_pos[BACT_NUM] = {0};
-int bactpos[BACT_NUM] = {0};
+//point next_pos[BACT_NUM] = {0};
+//int bactpos[BACT_NUM] = {0};
+typedef struct{
+	point cpos, npos;
+}bacteria;
+
+bacteria bs[20];
+
+
+//Calculated points of the bacteria.
+point r[20];
 // This variable acts as a key
 int histkey[256];
 // This variable acts a value in a pair
 int histvalue[256] = {0};
 // Global img variable
 cv::Mat img;
-
+//Intensity limit for the images
+#define THRESHOLD_LIMIT 35
 #include <random>
 // This function will return a random number between 0 and 255.
 int find_random() {
@@ -53,16 +63,14 @@ int get_intensity(point p) {
 
 // This function will return range number between the min and max.
 double find_random_range(int min, int max) {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<> dis(min, max);
-	float uniformOn01 = dis(gen);
-	return uniformOn01;
+	int randNum = rand()%(max-min + 1) + min;
+	return (double)randNum;
 }
+
 
 // This function finds the point that has a global_max
 void find_global_point() {
-	int i, j, temp;
+	int i, j;
 	// Fixing a point that has a same value as the global max.
 	for(i=gp.x; i< img.rows; i++) {
 		for (j=gp.y; j<img.cols; j++) {
@@ -70,8 +78,18 @@ void find_global_point() {
 			if (temp == GLOBAL_MAX) {
 				gp.x = i;
 				gp.y = j;
+				cout << "GP.x: " << gp.y << "\tGP.y: " << gp.x << " => "
+							<< (int) img.at<uchar>(gp.x, gp.y) << endl;
 				return;
 			}
 		}
+	}
+}
+
+// Callback for mouse events
+void call_back_func(int event, int x, int y, int flags, void* userdata) {
+	if ( event == EVENT_MOUSEMOVE ) {
+		cout << "Mouse move [" << x << "][" << y << "]: " <<
+				(int)img.at<uchar>(Point(x,y)) << endl;
 	}
 }
