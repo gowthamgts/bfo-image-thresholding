@@ -50,6 +50,11 @@ int histvalue[256] = {0};
 cv::Mat img;
 //Intensity limit for the images
 #define THRESHOLD_LIMIT 35
+
+// The final thresholding limit.
+float thresh;
+
+
 #include <random>
 // This function will return a random number between 0 and 255.
 int find_random() {

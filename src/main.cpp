@@ -124,9 +124,12 @@ int main()
 //	for (int i=0; i<256; i++) {
 //		cout << i << ": " << histvalue[i] << endl;
 //	}
-//	namedWindow("Test", WINDOW_NORMAL);
-////	setMouseCallback("Test", call_back_func, NULL);
-//	imshow("Test", img);
-//	waitKey(0);
+	Mat dst;
+	thresh = 70;
+	threshold(img, dst, thresh, 255, 0);
+	namedWindow("Test", cv::WINDOW_AUTOSIZE);
+//	setMouseCallback("Test", call_back_func, NULL);
+	imshow("Test", dst);
+	waitKey(0);
 	return 0;
 }
