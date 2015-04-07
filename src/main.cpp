@@ -86,12 +86,8 @@ int main()
 					b[i].jhealth = b[i].jsw;
 				}
 				cout << "JHEALTH: " << b[i].jhealth << endl << endl;
-//				break;
 			}
-//			break;
 		}
-//		break;
-//		/*
 		// sorting stage in reproduction 6.2
 		for(i=0; i<BACT_NUM; i++) {
 			for (j=i+1; j<BACT_NUM; j++) {
@@ -125,11 +121,11 @@ int main()
 //		cout << i << ": " << histvalue[i] << endl;
 //	}
 	Mat dst;
-	thresh = 70;
+	thresh = 64;
 	threshold(img, dst, thresh, 255, 0);
 	namedWindow("Test", cv::WINDOW_AUTOSIZE);
 //	setMouseCallback("Test", call_back_func, NULL);
-	imshow("Test", dst);
+	imshow("Test", img);
 	waitKey(0);
 	return 0;
 }

@@ -60,6 +60,7 @@ public:
 		jcc = t1 + t2;
 //		cout << "JCC: " << jcc << endl;
 		j = kapur::calc();
+		cout << "KAPUR: " << j << endl;
 		return j + jcc;
 	}
 
