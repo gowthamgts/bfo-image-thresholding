@@ -12,7 +12,8 @@
 #include "preprocessing.h"
 #include "bact.h"
 #include <ctime>
-
+#include <iomanip>
+#include "colorconversion.h"
 bool check_predicates(point temp) {
 	uint t = img.at<uchar>(temp.y, temp.x);
 //	cout << "Checking for temp.x: " << temp.x << " temp.y:" << temp.y << endl;
@@ -34,14 +35,87 @@ point calc_random_bacts() {
 int main()
 {
 	int i, j;
-	Mat imgrgb = imread("/home/electron/Pictures/ImageOutput/crop-1.jpg");
+	Mat imgrgb = imread("/home/electron/Pictures/Images/11-11.jpg");
 	// Check that the image read is a 3 channels image and not empty
     CV_Assert(imgrgb.channels() == 3);
 	if (imgrgb.empty()) {
 		cout << "Image is empty. Specify correct path" << endl;
 		return -1;
 	}
-	cv::cvtColor(imgrgb, img, CV_BGR2GRAY);
+	Mat cbr, ocbr, ihls, test;
+//	cv::cvtColor(imgrgb, ihls, CV_RGB2HLS);
+	colorconversion::convert_rgb_to_ihls(imgrgb, ihls);
+	cv::cvtColor(imgrgb, cbr, CV_RGB2YCrCb);
+	remove_upper(ocbr, cbr);
+	float n, scrcb = 0, scr2 = 0;
+	//some temp values
+	for (i=0; i < cbr.rows; i++) {
+			for (j=0; j < cbr.cols; j++) {
+				cv::Vec3b t = cbr.at<cv::Vec3b>(j, i);
+				float cr = (float) t.val[1];
+				float cb = (float)t.val[2];
+				scr2 += cr * cr;
+				if(cr!=0 && cb!=0) {
+					scrcb += check_nan(cr/cb);
+				}
+			}
+	}
+	cout << "scr2: " << scr2 << " scrcb: " << scrcb << endl;
+	n = (0.95 * scr2) / scrcb;
+	cout << "N: " << n << endl;
+	// variable denoting the total iterations to be executed.
+	int totalits = cbr.rows * cbr.cols;
+	float lmap[totalits], ucr2;
+	// variables for normalization
+	float min, max;
+	// init flag to find minimum and maximum
+	bool iflag = false;
+	// lamp index; serves as counter
+	int index = 0;
+	for (i=0; i < cbr.rows; i++) {
+		for (j=0; j < cbr.cols; j++) {
+			Vec3b t = cbr.at<Vec3b>(j, i);
+			uint ucr = (uint) t.val[1];
+			uint ucb = (uint)t.val[2];
+			ucr2 = ucr * ucr;
+			if(ucr!=0 && ucb!=0) {
+				lmap[index] = ucr2 * (ucr2-n*(ucr/ucb)) * (ucr2-n*(ucr/ucb));
+//				cout << "lmap: " << std::fixed << std::setprecision(2) << lmap
+//									<< endl;
+				if (!iflag) {
+					// initial condition
+					min = lmap[index];
+					max = lmap[index];
+					iflag = true;
+				} else {
+					min = (min > lmap[index])? lmap[index] : min;
+					max = (max < lmap[index])? lmap[index] : max;
+				}
+			}
+			index++;
+		}
+	}
+	cout << "min: " << min << " max: " << max << endl;
+	//normalization process
+//	float a = 0, b = 1;
+	index = 0;
+	for (i=0; i < cbr.rows; i++) {
+		for (j=0; j < cbr.cols; j++) {
+//			lmap[i] = a + (((lmap[i] - min)*(b - a)) / max-min);
+			lmap[index] = check_nan((lmap[index] - min) / (max - min));
+			if (lmap[index] > 1.0) {
+//				cout << std::fixed << std::setprecision(5)
+//				<< "lmap[" << index << "]: " << lmap[index] << endl;
+				imgrgb.at<Vec3b>(i,j) = Vec3b(0, 0, 255);
+				cout << "i: " << i << " j: " << j << endl;
+			}
+			index++;
+		}
+	}
+	namedWindow("Test", cv::WINDOW_AUTOSIZE);
+	imshow("Test", imgrgb);
+	waitKey(0);
+	/*
 	std::srand(std::time(0));
 	Bact b[BACT_NUM];
 	for (i=0; i<20; i++) {
@@ -127,5 +201,6 @@ int main()
 //	setMouseCallback("Test", call_back_func, NULL);
 	imshow("Test", img);
 	waitKey(0);
+	*/
 	return 0;
 }

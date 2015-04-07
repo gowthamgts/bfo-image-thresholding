@@ -28,17 +28,11 @@ typedef struct {
 int GLOBAL_MAX = -1;
 // A point of GLOBAL_MAX intensity
 point gp = {0};
-// Array of current positions of the bacts
-//point current_pos[BACT_NUM] = {0};
-// Array of next positions of the bacts
-//point next_pos[BACT_NUM] = {0};
-//int bactpos[BACT_NUM] = {0};
 typedef struct{
 	point cpos, npos;
 }bacteria;
 
 bacteria bs[20];
-
 
 //Calculated points of the bacteria.
 point r[20];
@@ -97,4 +91,8 @@ void call_back_func(int event, int x, int y, int flags, void* userdata) {
 		cout << "Mouse move [" << x << "][" << y << "]: " <<
 				(int)img.at<uchar>(Point(x,y)) << endl;
 	}
+}
+
+float check_nan(float value) {
+	return isnan(value) ? 0 : value;
 }

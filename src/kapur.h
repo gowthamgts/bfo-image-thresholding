@@ -51,9 +51,7 @@ float kapur::calc1() {
     //cout << "w0:" << w0 << endl << "w1:" << w1 << endl << "h0:" << h0 << endl << "h1:" << h1 << endl << "J:" << j1 << endl;
 	return j1;
 }
-float check_nan(float value) {
-	return isnan(value) ? 0 : value;
-}
+
 float kapur::calc() {
 	int i;
 	float pi[256] = {0};
