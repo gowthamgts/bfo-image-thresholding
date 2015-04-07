@@ -1,10 +1,3 @@
-//============================================================================
-// Name        : main.cpp
-// Author      : Gowtham Gopalakrishnan
-// Copyright   : There is none. You're free to use.
-// Description : Hello World in C++, Ansi-style
-//============================================================================
-
 //contains all the predefined consts and opencv headers.
 #include "predefines.h"
 #include <string>
@@ -15,7 +8,6 @@
 
 bool check_predicates(point temp) {
 	uint t = img.at<uchar>(temp.y, temp.x);
-//	cout << "Checking for temp.x: " << temp.x << " temp.y:" << temp.y << endl;
 	return (t < THRESHOLD_LIMIT) ? false : true;
 }
 
@@ -69,8 +61,6 @@ int main()
 	}
 	cout << "GLOBAL_MAX: " << GLOBAL_MAX << endl;
 	find_global_point();
-//	cout << "GP.x: " << gp.y << "\tGP.y: " << gp.x << " => "
-//			<< (int) img.at<uchar>(gp.x, gp.y) << endl;
 
 	for (int k=0; k<NRE; k++) {
 		// Selection of 20 bacteria
@@ -113,18 +103,10 @@ int main()
 				<< bs[i].cpos.y << "] "<< "=>" << get_intensity(bs[i].cpos)
 				<< endl;
 	}
-//	cout << "HISTOGRAM: " << endl;
-//	for(int i=0; i<20; i++) {
-//		cout << bactpos[i] << "=> " << histvalue[bactpos[i]] << endl;
-//	}
-//	for (int i=0; i<256; i++) {
-//		cout << i << ": " << histvalue[i] << endl;
-//	}
 	Mat dst;
 	thresh = 64;
 	threshold(img, dst, thresh, 255, 0);
 	namedWindow("Test", cv::WINDOW_AUTOSIZE);
-//	setMouseCallback("Test", call_back_func, NULL);
 	imshow("Test", img);
 	waitKey(0);
 	return 0;
