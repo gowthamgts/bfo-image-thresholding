@@ -5,7 +5,7 @@
 #include "preprocessing.h"
 #include "bact.h"
 #include <ctime>
-
+#include "colorconversion.h"
 bool check_predicates(point temp) {
 	uint t = img.at<uchar>(temp.y, temp.x);
 	return (t < THRESHOLD_LIMIT) ? false : true;
@@ -26,14 +26,17 @@ point calc_random_bacts() {
 int main()
 {
 	int i, j;
-	Mat imgrgb = imread("/home/electron/Pictures/ImageOutput/crop-1.jpg");
+	Mat imgrgb = imread("/home/electron/Pictures/Images/1-11.jpg");
+	Mat imgc;
 	// Check that the image read is a 3 channels image and not empty
     CV_Assert(imgrgb.channels() == 3);
 	if (imgrgb.empty()) {
 		cout << "Image is empty. Specify correct path" << endl;
 		return -1;
 	}
-	cv::cvtColor(imgrgb, img, CV_BGR2GRAY);
+	colorconversion::convert_rgb_to_ihls(imgrgb, imgc);
+	remove_upper(imgc, img);
+//	cv::cvtColor(imgrgb, img, CV_BGR2GRAY);
 	std::srand(std::time(0));
 	Bact b[BACT_NUM];
 	for (i=0; i<20; i++) {
@@ -98,16 +101,20 @@ int main()
 
 
 	cout << endl;
-	for(i=0; i<BACT_NUM; i++) {
+	float min = get_intensity(bs[0].cpos);
+	for(i=0; i<BACT_NUM/2; i++) {
 		cout << "BACT " << (i+1) << ": [" << bs[i].cpos.x << "]["
 				<< bs[i].cpos.y << "] "<< "=>" << get_intensity(bs[i].cpos)
 				<< endl;
+		if(get_intensity(bs[i].cpos) < min) {
+			min = get_intensity(bs[i].cpos);
+		}
 	}
 	Mat dst;
-	thresh = 64;
-	threshold(img, dst, thresh, 255, 0);
-	namedWindow("Test", cv::WINDOW_AUTOSIZE);
-	imshow("Test", img);
+	thresh = min;
+	threshold(img, dst, thresh, 255, 3);
+	namedWindow("Final Output", cv::WINDOW_AUTOSIZE);
+	imshow("Final Output", dst);
 	waitKey(0);
 	return 0;
 }
