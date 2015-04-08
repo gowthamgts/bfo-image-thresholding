@@ -18,12 +18,12 @@ public:
 	void start_process() {
 		jsw = calc_jsw(true);
 		jlast = jsw;
-		cout << "JLASTB: " << jlast << endl;
-		cout << "JSWB: " << jsw << endl;
+//		cout << "JLASTB: " << jlast << endl;
+//		cout << "JSWB: " << jsw << endl;
 		find_next_pos();
 		jsw = calc_jsw(false);
-		cout << "JLASTB: " << jlast << endl;
-		cout << "JSWB: " << jsw << endl;
+//		cout << "JLASTB: " << jlast << endl;
+//		cout << "JSWB: " << jsw << endl;
 		// Swimming process
 		int m = 0;
 		while(m<NS) {
@@ -36,8 +36,8 @@ public:
 			}
 			m++;
 		}
-		cout << "JLAST: " << jlast << endl;
-		cout << "JSW: " << jsw << endl;
+//		cout << "JLAST: " << jlast << endl;
+//		cout << "JSW: " << jsw << endl;
 	}
 
 	float calc_jsw(bool current) {

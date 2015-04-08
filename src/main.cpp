@@ -7,7 +7,9 @@
 #include <ctime>
 #include "colorconversion.h"
 bool check_predicates(point temp) {
+//	cout << "temp.x: " << temp.x << " temp.y: " << temp.y << endl;
 	uint t = img.at<uchar>(temp.y, temp.x);
+//	cout << t << endl;
 	return (t < THRESHOLD_LIMIT) ? false : true;
 }
 
@@ -17,8 +19,8 @@ bool check_predicates(point temp) {
 point calc_random_bacts() {
 	point temp = {0};
 	while(!check_predicates(temp)) {
-		temp.x = find_random_range(0, 640);
-		temp.y = find_random_range(0, 240);
+		temp.x = find_random_range(270,370);
+		temp.y = find_random_range(240,360);
 	}
 	return temp;
 }
@@ -26,8 +28,8 @@ point calc_random_bacts() {
 int main()
 {
 	int i, j;
-	Mat imgrgb = imread("/home/electron/Pictures/Images/1-11.jpg");
-	Mat imgc;
+	Mat imgrgb = imread("/home/electron/Pictures/Images/5-11.jpg");
+	Mat imgc, imgb;
 	// Check that the image read is a 3 channels image and not empty
     CV_Assert(imgrgb.channels() == 3);
 	if (imgrgb.empty()) {
@@ -35,8 +37,8 @@ int main()
 		return -1;
 	}
 	colorconversion::convert_rgb_to_ihls(imgrgb, imgc);
-	remove_upper(imgc, img);
-//	cv::cvtColor(imgrgb, img, CV_BGR2GRAY);
+	cv::cvtColor(imgc, imgb, CV_BGR2GRAY);
+	clean_image(imgb, img);
 	std::srand(std::time(0));
 	Bact b[BACT_NUM];
 	for (i=0; i<20; i++) {
@@ -46,7 +48,7 @@ int main()
 		cout << "Point selected at [" << r[i].x << "][" << r[i].y << "] => "
 				<< (int)img.at<uchar>(r[i].y, r[i].x) << endl;
 	}
-
+	cout << "blah" << endl;
 // Calculation for histograms start here.
 	for(i=0; i< 240; i++) {
 		for (j=0; j<640; j++) {
@@ -71,14 +73,14 @@ int main()
 		for(i=0; i<BACT_NUM; i++) {
 			b[i].counter = i;
 			for(j = 0; j < NC; j++) {
-				cout << "\nBact " << (i+1) << "." << (j+1) << endl;
+//				cout << "\nBact " << (i+1) << "." << (j+1) << endl;
 				b[i].iteration = j;
 				b[i].start_process();
 				// Reproduction phase
 				if (b[i].jsw > b[i].jhealth) {
 					b[i].jhealth = b[i].jsw;
 				}
-				cout << "JHEALTH: " << b[i].jhealth << endl << endl;
+//				cout << "JHEALTH: " << b[i].jhealth << endl << endl;
 			}
 		}
 		// sorting stage in reproduction 6.2
@@ -101,18 +103,42 @@ int main()
 
 
 	cout << endl;
-	float min = get_intensity(bs[0].cpos);
+//	float min = get_intensity(bs[0].cpos);
+	float arr[10][2] = {0};
+
+	int index = 0;
+	while (index < 10) {
+		arr[index][1] = 1;
+		index++;
+	}
+	thresh = 0;
 	for(i=0; i<BACT_NUM/2; i++) {
-		cout << "BACT " << (i+1) << ": [" << bs[i].cpos.x << "]["
-				<< bs[i].cpos.y << "] "<< "=>" << get_intensity(bs[i].cpos)
-				<< endl;
-		if(get_intensity(bs[i].cpos) < min) {
-			min = get_intensity(bs[i].cpos);
+		bool cs = false;
+		float inten = (float)get_intensity(bs[i].cpos);
+		cout << "inten: " << i << " => " << inten << endl;
+		for (j=0; j<BACT_NUM/2; j++) {
+			if (inten == arr[j][0]) {
+				cout << "Match at pos: " << j << ": " << ++arr[j][1] <<endl;
+				cs = true;
+				break;
+			}
+		}
+		if(!cs) {
+			arr[i][0] = inten;
 		}
 	}
+	thresh = arr[0][0];
+	float max = arr[0][1];
+	for(i=0; i<BACT_NUM/2; i++) {
+		if (max < arr[i][1]) {
+			max = arr[i][1];
+			thresh = arr[i][0];
+		}
+//		cout << arr[i][0] << ": " << arr[i][1] << endl;
+//		cout << "Threshold: " << thresh << endl;
+	}
 	Mat dst;
-	thresh = min;
-	threshold(img, dst, thresh, 255, 3);
+	threshold(img, dst, thresh, 255, 0);
 	namedWindow("Final Output", cv::WINDOW_AUTOSIZE);
 	imshow("Final Output", dst);
 	waitKey(0);
