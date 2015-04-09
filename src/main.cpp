@@ -50,8 +50,8 @@ int main()
 	}
 	cout << "blah" << endl;
 // Calculation for histograms start here.
-	for(i=0; i< 240; i++) {
-		for (j=0; j<640; j++) {
+	for(i=240; i< 360; i++) {
+		for (j=270; j<370; j++) {
 			int temp = img.at<uchar>(i,j);
 			histvalue[temp]++;
 		}
