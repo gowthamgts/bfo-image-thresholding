@@ -60,7 +60,7 @@ public:
 		jcc = t1 + t2;
 //		cout << "JCC: " << jcc << endl;
 		j = kapur::calc();
-		cout << "KAPUR: " << j << endl;
+//		cout << "KAPUR: " << j << endl;
 		return j + jcc;
 	}
 
@@ -100,16 +100,16 @@ public:
 //		cout << "NEXT_POS: " << next_pos[counter].x << "\t"
 //				<< next_pos[counter].y << " => " << t << endl;
 		bs[counter].npos = bs[counter].cpos;
-		cout << "CPOS: [" << bs[counter].cpos.x << "][" << bs[counter].cpos.y << "] => "
-				<< get_intensity(bs[counter].cpos) << endl;
+//		cout << "CPOS: [" << bs[counter].cpos.x << "][" << bs[counter].cpos.y << "] => "
+//				<< get_intensity(bs[counter].cpos) << endl;
 		bs[counter].npos.x = round(bs[counter].npos.x + move);
 		bs[counter].npos.y = round(bs[counter].npos.y + move);
-		cout << "NPOS: [" << bs[counter].npos.x << "][" << bs[counter].npos.y << "] => "
-						<< get_intensity(bs[counter].npos) << endl;
+//		cout << "NPOS: [" << bs[counter].npos.x << "][" << bs[counter].npos.y << "] => "
+//						<< get_intensity(bs[counter].npos) << endl;
 		int t = get_intensity(bs[counter].npos);
 		if (t > THRESHOLD_LIMIT) {
 			// change the position
-			cout << "Counter: " << counter << endl;
+//			cout << "Counter: " << counter << endl;
 			bs[counter].cpos = bs[counter].npos;
 		}
 	}

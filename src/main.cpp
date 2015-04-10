@@ -51,10 +51,9 @@ int main()
 		b[i].counter = i;
 		r[i] = calc_random_bacts();
 		b[i].set_current_pos(r[i]);
-		cout << "Point selected at [" << r[i].x << "][" << r[i].y << "] => "
-				<< (int)img.at<uchar>(r[i].y, r[i].x) << endl;
+//		cout << "Point selected at [" << r[i].x << "][" << r[i].y << "] => "
+//				<< (int)img.at<uchar>(r[i].y, r[i].x) << endl;
 	}
-	cout << "blah" << endl;
 // Calculation for histograms start here.
 	for(i=240; i< 360; i++) {
 		for (j=270; j<370; j++) {
@@ -70,7 +69,7 @@ int main()
 			GLOBAL_MAX = i;
 		}
 	}
-	cout << "GLOBAL_MAX: " << GLOBAL_MAX << endl;
+//	cout << "GLOBAL_MAX: " << GLOBAL_MAX << endl;
 	find_global_point();
 
 	for (int k=0; k<NRE; k++) {
@@ -121,10 +120,10 @@ int main()
 	for(i=0; i<BACT_NUM/2; i++) {
 		bool cs = false;
 		float inten = (float)get_intensity(bs[i].cpos);
-		cout << "inten: " << i << " => " << inten << endl;
+//		cout << "inten: " << i << " => " << inten << endl;
 		for (j=0; j<BACT_NUM/2; j++) {
 			if (inten == arr[j][0]) {
-				cout << "Match at pos: " << j << ": " << ++arr[j][1] <<endl;
+//				cout << "Match at pos: " << j << ": " << ++arr[j][1] <<endl;
 				cs = true;
 				break;
 			}
@@ -148,5 +147,6 @@ int main()
 	namedWindow("Final Output", cv::WINDOW_AUTOSIZE);
 	imshow("Final Output", dst);
 	waitKey(0);
+	cout << "PSNR: " << getPSNR(img, dst) << endl;
 	return 0;
 }
