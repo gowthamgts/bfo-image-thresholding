@@ -28,7 +28,9 @@ point calc_random_bacts() {
 int main()
 {
 	int i, j;
-	Mat imgrgb = imread("/home/electron/Pictures/Images/5-11.jpg");
+	Mat imgrgb = imread("/home/electron/Pictures/Images/1-11.jpg");
+	namedWindow("Original Image", cv::WINDOW_AUTOSIZE);
+	imshow("Original Image", imgrgb);
 	Mat imgc, imgb;
 	// Check that the image read is a 3 channels image and not empty
     CV_Assert(imgrgb.channels() == 3);
@@ -37,8 +39,12 @@ int main()
 		return -1;
 	}
 	colorconversion::convert_rgb_to_ihls(imgrgb, imgc);
+	namedWindow("IHLS Image", cv::WINDOW_AUTOSIZE);
 	cv::cvtColor(imgc, imgb, CV_BGR2GRAY);
+	imshow("IHLS Image", imgb);
 	clean_image(imgb, img);
+	namedWindow("Cropped Image", cv::WINDOW_AUTOSIZE);
+	imshow("Cropped Image", img);
 	std::srand(std::time(0));
 	Bact b[BACT_NUM];
 	for (i=0; i<20; i++) {
