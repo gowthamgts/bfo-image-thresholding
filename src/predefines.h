@@ -19,7 +19,7 @@ typedef struct {
 
 #define BACT_NUM 20
 #define NS 10
-#define NC 10
+#define NC 40
 #define NRE 4
 //TODO: Verify Step Size
 #define STEP_SIZE 1
@@ -44,10 +44,8 @@ int histvalue[256] = {0};
 cv::Mat img;
 //Intensity limit for the images
 #define THRESHOLD_LIMIT 35
-
 // The final thresholding limit.
 float thresh;
-
 
 #include <random>
 // This function will return a random number between 0 and 255.
@@ -105,11 +103,8 @@ double getPSNR(const Mat& I1, const Mat& I2)
     absdiff(I1, I2, s1);       // |I1 - I2|
     s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
     s1 = s1.mul(s1);           // |I1 - I2|^2
-
     Scalar s = sum(s1);         // sum elements per channel
-
     double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
-
     if( sse <= 1e-10) // for small values return zero
         return 0;
     else

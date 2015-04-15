@@ -7,9 +7,7 @@
 #include <ctime>
 #include "colorconversion.h"
 bool check_predicates(point temp) {
-//	cout << "temp.x: " << temp.x << " temp.y: " << temp.y << endl;
 	uint t = img.at<uchar>(temp.y, temp.x);
-//	cout << t << endl;
 	return (t < THRESHOLD_LIMIT) ? false : true;
 }
 
@@ -51,8 +49,6 @@ int main()
 		b[i].counter = i;
 		r[i] = calc_random_bacts();
 		b[i].set_current_pos(r[i]);
-//		cout << "Point selected at [" << r[i].x << "][" << r[i].y << "] => "
-//				<< (int)img.at<uchar>(r[i].y, r[i].x) << endl;
 	}
 // Calculation for histograms start here.
 	for(i=240; i< 360; i++) {
@@ -69,7 +65,6 @@ int main()
 			GLOBAL_MAX = i;
 		}
 	}
-//	cout << "GLOBAL_MAX: " << GLOBAL_MAX << endl;
 	find_global_point();
 
 	for (int k=0; k<NRE; k++) {
@@ -78,14 +73,12 @@ int main()
 		for(i=0; i<BACT_NUM; i++) {
 			b[i].counter = i;
 			for(j = 0; j < NC; j++) {
-//				cout << "\nBact " << (i+1) << "." << (j+1) << endl;
 				b[i].iteration = j;
 				b[i].start_process();
 				// Reproduction phase
 				if (b[i].jsw > b[i].jhealth) {
 					b[i].jhealth = b[i].jsw;
 				}
-//				cout << "JHEALTH: " << b[i].jhealth << endl << endl;
 			}
 		}
 		// sorting stage in reproduction 6.2
@@ -120,10 +113,8 @@ int main()
 	for(i=0; i<BACT_NUM/2; i++) {
 		bool cs = false;
 		float inten = (float)get_intensity(bs[i].cpos);
-//		cout << "inten: " << i << " => " << inten << endl;
 		for (j=0; j<BACT_NUM/2; j++) {
 			if (inten == arr[j][0]) {
-//				cout << "Match at pos: " << j << ": " << ++arr[j][1] <<endl;
 				cs = true;
 				break;
 			}
@@ -139,8 +130,6 @@ int main()
 			max = arr[i][1];
 			thresh = arr[i][0];
 		}
-//		cout << arr[i][0] << ": " << arr[i][1] << endl;
-//		cout << "Threshold: " << thresh << endl;
 	}
 	Mat dst;
 	threshold(img, dst, thresh, 255, 0);
