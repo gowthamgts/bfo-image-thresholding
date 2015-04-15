@@ -19,7 +19,7 @@ typedef struct {
 
 #define BACT_NUM 20
 #define NS 10
-#define NC 40
+#define NC 10
 #define NRE 4
 //TODO: Verify Step Size
 #define STEP_SIZE 1
